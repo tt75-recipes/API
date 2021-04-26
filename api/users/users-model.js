@@ -9,7 +9,8 @@ const getById = (id) => {
 };
 
 const create = async (user) => {
-  const [id] = await db("users").insert(user);
+  const [id] = await db("users").insert(user).returning("user_id");
+  console.log(id);
   return db("users").where({ user_id: id }).first();
 };
 
