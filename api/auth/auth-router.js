@@ -9,23 +9,24 @@ const db = require("../data/db-config");
 
 router.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
-
   if (username === undefined || password === undefined) {
     next({ status: 401, message: "username and password required" });
   }
-
   try {
     let user = req.body;
     const hash = bcrypt.hashSync(req.body.password, 8);
     user.password = hash;
 
-    const userCheck = await db("users")
-      .where({ username: req.body.username })
-      .first();
+    // const userCheck = await db("users")
+    //   .where({ username: req.body.username })
+    //   .first();
+    const userCheck = false;
     if (userCheck) {
       next({ status: 401, message: "username taken" });
     } else {
+      console.log(user);
       const newUser = await User.create(user);
+
       if (!newUser) {
         next({ status: 401, message: "could not create new user" });
       } else {
