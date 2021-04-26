@@ -17,6 +17,7 @@ exports.up = async (knex) => {
       tbl.increments("recipe_id");
       tbl.text("title").notNullable();
       tbl.text("source").notNullable();
+      tbl.text("ingredients").notNullable();
       tbl
         .integer("category_id")
         .unsigned()
