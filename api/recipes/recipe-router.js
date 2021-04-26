@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const Recipe = require("./recipe-model");
+const restricted = require("../middleware/restricted");
+const db = require("../data/db-config");
 
-router.get("/", async (req, res, next) => {
+router.get("/", restricted, async (req, res, next) => {
   try {
     const allRecipes = await Recipe.get();
     if (!allRecipes) {
@@ -14,7 +16,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", restricted, async (req, res, next) => {
   const { title, source, ingredients, instructions, category } = req.body;
 
   if (!title || !source || !ingredients || !instructions || !category) {
@@ -24,14 +26,28 @@ router.post("/", async (req, res, next) => {
     });
   } else {
     try {
-      const newRecipe = await Recipe.create(req.body);
+      const category_id = await db("categories")
+        .where("category_name", category)
+        .select("category_id")
+        .first();
+
+      const recipe = {
+        title: title,
+        source: source,
+        ingredients: ingredients,
+        instructions: instructions,
+        category_id: category_id.category_id,
+        // user_id: req.decodedToken.subject || 1,
+        user_id: 1,
+      };
+      const newRecipe = await Recipe.create(recipe);
       if (!newRecipe) {
         next({ status: 401, message: "recipe could not be created" });
       } else {
         res.status(201).json(newRecipe);
       }
     } catch (e) {
-      next(e.message);
+      next({ message: e.message });
     }
   }
 });

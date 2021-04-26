@@ -3,6 +3,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const recipeRoutes = require("./recipes/recipe-router");
 const authRoutes = require("./auth/auth-router");
+const categoryRoutes = require("./categories/category-router");
 
 const server = express();
 server.use(express.json());
@@ -10,6 +11,7 @@ server.use(helmet());
 server.use(cors());
 server.use("/api/auth", authRoutes);
 server.use("/api/recipes", recipeRoutes);
+server.use("/api/categories", categoryRoutes);
 
 server.get("/", (req, res) => {
   res.json({

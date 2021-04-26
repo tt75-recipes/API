@@ -9,7 +9,7 @@ const getById = (id) => {
 };
 
 const create = async (recipe) => {
-  const [id] = await db("recipes").insert(recipe);
+  const [id] = await db("recipes").insert(recipe).returning("recipe_id");
   return db("recipes").where({ recipe_id: id }).first();
 };
 
