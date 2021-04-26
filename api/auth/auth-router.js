@@ -2,7 +2,7 @@ const router = require("express").Router();
 const User = require("../users/users-model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "keepthissecret";
+const { JWT_SECRET } = require("../secrets/index");
 const checkUsernameExists = require("../middleware/checkUsernameExists");
 
 const db = require("../data/db-config");
