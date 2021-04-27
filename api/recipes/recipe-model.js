@@ -15,7 +15,10 @@ const getById = async (id) => {
   let ingredients = [];
 
   for (let i = 0; i < unformatted.length; i++) {
-    ingredients.push(unformatted[i].ingredient_name);
+    ingredients.push({
+      name: unformatted[i].ingredient_name,
+      measurement: unformatted[i].measurement,
+    });
   }
 
   return {
