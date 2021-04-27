@@ -17,7 +17,7 @@ exports.up = async (knex) => {
       tbl.increments("recipe_id");
       tbl.text("title").notNullable();
       tbl.text("source").notNullable();
-      tbl.text("instructions").notNullable();
+      tbl.text("instructions", 686).notNullable();
       tbl
         .integer("category_id")
         .unsigned()
@@ -35,7 +35,6 @@ exports.up = async (knex) => {
     })
     .createTable("recipe_ingredients", (tbl) => {
       tbl.increments("recipe_ingredients_id");
-      tbl.float("quantity").notNullable();
       tbl
         .integer("recipe_id")
         .unsigned()
