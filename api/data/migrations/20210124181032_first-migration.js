@@ -11,7 +11,8 @@ exports.up = async (knex) => {
     })
     .createTable("ingredients", (tbl) => {
       tbl.increments("ingredient_id");
-      tbl.text("ingredient_name");
+      tbl.text("ingredient_name").notNullable();
+      tbl.text("measurement").notNullable();
     })
     .createTable("recipes", (tbl) => {
       tbl.increments("recipe_id");

@@ -56,8 +56,6 @@ router.post("/", restricted, async (req, res, next) => {
           .returning("category_id");
       }
 
-      // console.log(category_id);
-
       const recipe = {
         title: title,
         source: source,
@@ -70,15 +68,16 @@ router.post("/", restricted, async (req, res, next) => {
         next({ status: 401, message: "recipe could not be created" });
       } else {
         for (let i = 0; i < ingredients.length; i++) {
-          // console.log(ingredients[i]);
           const [ingredient] = await db("ingredients").where({
-            ingredient_name: ingredients[i],
+            ingredient_name: ingredients[i].name,
           });
           if (!ingredient) {
             const [ingredient_id] = await db("ingredients")
-              .insert({ ingredient_name: ingredients[i] })
+              .insert({
+                ingredient_name: ingredients[i].name,
+                measurement: ingredients[i].measurement,
+              })
               .returning("ingredient_id");
-            // console.log("ingredient id", ingredient_id);
             await db("recipe_ingredients").insert({
               recipe_id: newRecipe.recipe_id,
               ingredient_id: ingredient_id,
