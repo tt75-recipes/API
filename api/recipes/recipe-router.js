@@ -16,6 +16,22 @@ router.get("/", restricted, async (req, res, next) => {
   }
 });
 
+router.get("/:id", restricted, async (req, res, next) => {
+  try {
+    const recipe = await Recipe.getById(req.params.id);
+    if (!recipe) {
+      next({
+        status: 404,
+        message: `could not get recipe with id ${req.params.id}`,
+      });
+    } else {
+      res.status(200).json(recipe);
+    }
+  } catch (e) {
+    next({ message: e.message });
+  }
+});
+
 router.post("/", restricted, async (req, res, next) => {
   const { title, source, ingredients, instructions, category } = req.body;
 

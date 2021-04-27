@@ -5,7 +5,7 @@ const get = () => {
 };
 
 const getById = (id) => {
-  return db("recipes").where({ recipe_id: id });
+  return db("recipes").where({ recipe_id: id }).first();
 };
 
 const create = async (recipe) => {
