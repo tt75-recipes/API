@@ -18,7 +18,6 @@ router.get("/", restricted, async (req, res, next) => {
 
 router.get("/:id", restricted, async (req, res, next) => {
   try {
-    console.log(req.decodedToken.subject);
     const recipe = await Recipe.getById(req.params.id);
     if (!recipe) {
       next({
@@ -35,6 +34,8 @@ router.get("/:id", restricted, async (req, res, next) => {
 
 router.post("/", restricted, async (req, res, next) => {
   const { title, source, ingredients, instructions, category } = req.body;
+  // console.log(req.decodedToken.subject);
+  const user_id = req.decodedToken.subject;
 
   if (!title || !source || !ingredients || !instructions || !category) {
     next({
@@ -43,24 +44,47 @@ router.post("/", restricted, async (req, res, next) => {
     });
   } else {
     try {
-      const category_id = await db("categories")
+      let [category_id] = await db("categories")
         .where("category_name", category)
-        .select("category_id")
-        .first();
+        .select("category_id");
+
+      // console.log(category_id);
+
+      if (!category_id || category_id === undefined) {
+        [category_id] = await db("categories")
+          .insert({ category_name: category })
+          .returning("category_id");
+      }
+
+      // console.log(category_id);
 
       const recipe = {
         title: title,
         source: source,
-        ingredients: ingredients,
         instructions: instructions,
-        category_id: category_id.category_id,
-        // user_id: req.decodedToken.subject || 1,
-        user_id: 1,
+        category_id: category_id,
+        user_id: user_id,
       };
       const newRecipe = await Recipe.create(recipe);
       if (!newRecipe) {
         next({ status: 401, message: "recipe could not be created" });
       } else {
+        for (let i = 0; i < ingredients.length; i++) {
+          // console.log(ingredients[i]);
+          const [ingredient] = await db("ingredients").where({
+            ingredient_name: ingredients[i],
+          });
+          if (!ingredient) {
+            const [ingredient_id] = await db("ingredients")
+              .insert({ ingredient_name: ingredients[i] })
+              .returning("ingredient_id");
+            // console.log("ingredient id", ingredient_id);
+            await db("recipe_ingredients").insert({
+              recipe_id: newRecipe.recipe_id,
+              ingredient_id: ingredient_id,
+            });
+          }
+        }
         res.status(201).json(newRecipe);
       }
     } catch (e) {
