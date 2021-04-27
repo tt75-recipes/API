@@ -9,6 +9,7 @@ const getById = async (id) => {
     .join("recipe_ingredients as ri", "ri.recipe_id", "r.recipe_id")
     .join("ingredients as i", "i.ingredient_id", "ri.ingredient_id")
     .join("categories as c", "r.category_id", "c.category_id")
+    .join("users as u", "u.user_id", "r.user_id")
     .where("r.recipe_id", id);
 
   let ingredients = [];
@@ -24,6 +25,7 @@ const getById = async (id) => {
     instructions: unformatted[0].instructions,
     category: unformatted[0].category_name,
     ingredients: ingredients,
+    created_by: unformatted[0].username,
   };
 };
 

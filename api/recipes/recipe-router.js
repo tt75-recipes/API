@@ -18,6 +18,7 @@ router.get("/", restricted, async (req, res, next) => {
 
 router.get("/:id", restricted, async (req, res, next) => {
   try {
+    console.log(req.decodedToken.subject);
     const recipe = await Recipe.getById(req.params.id);
     if (!recipe) {
       next({
