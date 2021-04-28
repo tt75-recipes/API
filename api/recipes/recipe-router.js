@@ -34,7 +34,6 @@ router.get("/:id", restricted, async (req, res, next) => {
 
 router.post("/", restricted, async (req, res, next) => {
   const { title, source, ingredients, instructions, category } = req.body;
-  // console.log(req.decodedToken.subject);
   const user_id = req.decodedToken.subject;
 
   if (!title || !source || !ingredients || !instructions || !category) {
@@ -70,6 +69,7 @@ router.post("/", restricted, async (req, res, next) => {
         for (let i = 0; i < ingredients.length; i++) {
           const [ingredient] = await db("ingredients").where({
             ingredient_name: ingredients[i].name,
+            measurement: ingredients[i].measurement,
           });
           if (!ingredient) {
             const [ingredient_id] = await db("ingredients")
