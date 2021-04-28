@@ -37,9 +37,14 @@ const create = async (recipe) => {
   return db("recipes").where({ recipe_id: id }).first();
 };
 
+const updateById = async (id, recipe) => {
+  await db("recipes").where("recipe_id", id).update(recipe);
+  return getById(id);
+};
+
 const remove = async (id) => {
   const deleted = await getById(id);
-  await db("recipes").where({ recipe_id: id });
+  await db("recipes").where("recipe_id", id).delete();
   return deleted;
 };
 
@@ -48,4 +53,5 @@ module.exports = {
   getById,
   create,
   remove,
+  updateById,
 };
