@@ -1,7 +1,12 @@
 const db = require("../data/db-config");
 
 module.exports = async (req, res, next) => {
-  if (req.body.username === undefined || req.body.password === undefined) {
+  if (
+    req.body.username === undefined ||
+    req.body.password === undefined ||
+    !req.body.username ||
+    !req.body.password
+  ) {
     next({ status: 401, message: "username and password required" });
   }
   try {
