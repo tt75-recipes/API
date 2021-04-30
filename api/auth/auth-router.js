@@ -9,7 +9,12 @@ const db = require("../data/db-config");
 
 router.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
-  if (username === undefined || password === undefined) {
+  if (
+    username === undefined ||
+    password === undefined ||
+    !req.body.username ||
+    !req.body.password
+  ) {
     next({ status: 401, message: "username and password required" });
   }
   try {
